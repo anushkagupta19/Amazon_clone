@@ -61,5 +61,4 @@ Make it a full-stack e-commerce site with backend and database
 📜 License
 This project is for educational purposes only and is not intended for commercial use. It is not affiliated with Amazon.
 
-🙋‍♀️ Author
-Your Name – Anushka Gupta
+🙋‍♀️ Author – Anushka Gupta
