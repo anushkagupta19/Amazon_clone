@@ -1,64 +1,112 @@
-# 🛒 Amazon Clone (Frontend Only)
+# 🎬 VidSnap AI: Automated Video Reel Generator
 
-A static clone of the Amazon homepage built using HTML and CSS. This project aims to replicate the visual structure and layout of Amazon’s front page as closely as possible for learning purposes.
+VidSnap AI is a full-stack Python application that automatically transforms user-submitted images and text descriptions into engaging, ready-to-share social media video reels. This project leverages AI-powered text-to-speech and powerful media manipulation tools to create a seamless, end-to-end content creation pipeline.
 
-## 📌 Project Objective
+## ✨ Features
 
-- Practice and improve frontend development skills using HTML and CSS.
-- Understand layout design, responsive design principles, and UI structure.
-- Replicate a real-world e-commerce UI without using any JavaScript or frameworks.
+  - **Web-Based Interface:** A simple and intuitive web interface built with Flask for users to upload images and enter text.
+  - **AI-Powered Narration:** Integrates the **ElevenLabs API** to generate high-quality, human-like audio from user-provided text.
+  - **Automated Video Assembly:** Uses **FFmpeg** to programmatically combine the generated audio with uploaded images, creating a vertically formatted (1080x1920) video reel.
+  - **Asynchronous Background Processing:** A dedicated script handles the heavy lifting of audio generation and video encoding in the background, ensuring the web interface remains fast and responsive.
+  - **Unique Project Management:** Assigns a unique UUID to each submission, creating an organized and robust file management system for handling multiple projects simultaneously.
 
-## ⚙️ Technologies Used
+## 🛠️ Tech Stack
 
-- HTML5
-- CSS3
-- Font Awesome (for icons, optional)
-- Google Fonts (optional)
+  - **Backend:** Python, Flask
+  - **AI Services:** ElevenLabs API (for Text-to-Speech)
+  - **Media Processing:** FFmpeg
+  - **Frontend:** HTML, CSS, JavaScript (implied for the web interface)
+  - **Core Libraries:** `uuid`, `werkzeug`
 
-## 🗂️ Project Structure
+## 📂 Project Structure
 
-amazon-clone/
-├── index.html
-├── style.css
-├── images/
-│ └── (all the images used in the project)
-└── README.md
+```
+├── main.py                 # Main Flask web server for handling uploads
+├── generate_process.py     # Background script for processing the queue
+├── text_to_audio.py        # Module for interacting with the ElevenLabs API
+├── config.py               # Configuration file for API keys
+├── requirements.txt        # Python dependencies
+│
+├── user_uploads/           # Directory where user content is stored temporarily
+│   └── [UUID]/
+│       ├── image1.jpg
+│       ├── desc.txt
+│       └── ...
+│
+├── static/
+│   └── reels/              # Directory where final videos are saved
+│       └── [UUID].mp4
+│
+└── templates/
+    └── index.html          # HTML for the user interface
+```
 
+## ⚙️ How It Works
 
-## 🚀 How to Run the Project Locally
+1.  A user visits the web application and uploads one or more images and a text description.
+2.  The **Flask (`main.py`)** server receives the files, generates a unique UUID for the project, and saves the images and text into a new directory within `user_uploads/`.
+3.  The **background script (`generate_process.py`)** runs continuously, scanning the `user_uploads/` directory for new projects that haven't been processed yet.
+4.  When a new project is found, the script calls the `text_to_audio.py` module, which sends the user's text to the **ElevenLabs API** to generate an audio file.
+5.  Once the audio is generated, the script uses a powerful **FFmpeg** command to combine the audio with the user's images, creating a properly formatted video reel.
+6.  The final video is saved in the `static/reels/` directory, and the project's UUID is marked as "done" to prevent reprocessing.
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/amazon-clone.git
-   cd amazon-clone
+## 🚀 Installation and Setup
 
-2. Open index.html in your browser:
+### Prerequisites
 
-Right-click the file and select Open with Browser
+  - Python 3.x
+  - FFmpeg installed and accessible from the command line.
+  - An API key from [ElevenLabs](https://elevenlabs.io/).
 
-OR use a live server extension in VS Code
+### Local Setup
 
-💡 Features
-Header with Amazon logo, search bar, and cart icon
+1.  **Clone the repository:**
 
-Navigation menu
+    ```bash
+    git clone https://github.com/your-username/vidsnap-ai.git
+    cd vidsnap-ai
+    ```
 
-Hero image/banner
+2.  **Create and activate a virtual environment:**
 
-Product grid sections
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+    ```
 
-Footer layout
+3.  **Install the required dependencies:**
 
-Fully responsive design
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-🎯 Future Improvements
-Add interactivity with JavaScript
+4.  **Configure your API Key:**
 
-Build other pages like product detail, cart, login
+      - Open the `config.py` file.
+      - Replace the placeholder with your actual ElevenLabs API key:
+        ```python
+        ELEVENLABS_API_KEY = "your_elevenlabs_api_key_here"
+        ```
 
-Make it a full-stack e-commerce site with backend and database
+5.  **Run the application:**
 
-📜 License
-This project is for educational purposes only and is not intended for commercial use. It is not affiliated with Amazon.
+      - You will need to run two processes in separate terminal windows.
+      - **Terminal 1 (Flask Web Server):**
+        ```bash
+        python main.py
+        ```
+      - **Terminal 2 (Background Processor):**
+        ```bash
+        python generate_process.py
+        ```
 
-🙋‍♀️ Author – Anushka Gupta
+6.  **Access the application:**
+
+      - Open your web browser and navigate to `http://127.0.0.1:5000`.
+
+## 📈 Future Improvements
+
+  - **Implement a Robust Task Queue:** Replace the `done.txt` system with a more scalable solution like Celery and Redis for managing background tasks.
+  - **User Accounts:** Add user authentication to allow users to view and manage their past creations.
+  - **More Customization:** Allow users to choose different voices, background music, or video transition effects.
+  - **Error Handling:** Implement more robust error handling for API failures or issues during video processing.
